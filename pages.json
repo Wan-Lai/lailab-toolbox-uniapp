@@ -1,0 +1,126 @@
+{
+	"pages": [{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarBackgroundColor": "#ffffff",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/more/more",
+			"style": {
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "pages/utils/showImg/showImg",
+			"style": {
+				"navigationBarTextStyle": "black",
+				"navigationStyle": "custom"
+			}
+
+		}, {
+			"path": "pages/utils/showText/showText",
+			"style": {
+				"navigationBarTextStyle": "black"
+			}
+
+		}, {
+			"path": "pages/subpages/bayinhe/bayinhe",
+			"style": {
+				"navigationBarTitleText": "八音盒",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "pages/subpages/erweima/erweima",
+			"style": {
+				"navigationBarTitleText": "二维码",
+				"navigationBarBackgroundColor": "#54a0ff",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/subpages/qiaomuyu/qiaomuyu",
+			"style": {
+				"navigationBarTitleText": "敲木鱼",
+				"navigationBarBackgroundColor": "#000000",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/subpages/zhengjianzhao/zhengjianzhao",
+			"style": {
+				"navigationBarTitleText": "证件照",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/subpages/zhinengkoutu/zhinengkoutu",
+			"style": {
+				"navigationBarTitleText": "智能抠图",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/subpages/mosidianma/mosidianma",
+			"style": {
+				"navigationBarTitleText": "摩斯电码",
+				"navigationBarBackgroundColor": "#54a0ff",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/subpages/suijitouzi/suijitouzi",
+			"style": {
+				"navigationBarTitleText": "随机骰子",
+				"navigationBarBackgroundColor": "#f6f7f9"
+			}
+
+		}
+	    ,{
+            "path" : "pages/subpages/choujiangzhushou/choujiangzhushou",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "LaiLab工具箱",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#ffffff",
+		"lazyCodeLoading": "requiredComponents"
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#000000",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/home/home",
+			"iconPath": "static/images/image_home.png",
+			"selectedIconPath": "static/images/image_home_selected.png",
+			"text": "主页"
+		}, {
+			"pagePath": "pages/more/more",
+			"iconPath": "static/images/image_more.png",
+			"selectedIconPath": "static/images/image_more_selected.png",
+			"text": "更多"
+		}, {
+			"pagePath": "pages/mine/mine",
+			"iconPath": "static/images/image_mine.png",
+			"selectedIconPath": "static/images/image_mine_selected.png",
+			"text": "我的"
+		}]
+	}
+
+}

@@ -1,0 +1,127 @@
+{
+    "name" : "LaiLab工具箱",
+    "appid" : "__UNI__C046081",
+    "description" : "",
+    "versionName" : "1.0.0",
+    "versionCode" : "100",
+    "transformPx" : false,
+    /* 5+App特有相关 */
+    "app-plus" : {
+        "usingComponents" : true,
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
+        },
+        /* 模块配置 */
+        "modules" : {
+            "OAuth" : {}
+        },
+        /* 应用发布信息 */
+        "distribute" : {
+            /* android打包配置 */
+            "android" : {
+                "permissions" : [
+                    "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                ]
+            },
+            /* ios打包配置 */
+            "ios" : {
+                "capabilities" : {
+                    "entitlements" : {
+                        "com.apple.developer.associated-domains" : [ "applinks:lailab.cn", "applinks:mp.lailab.cn" ]
+                    }
+                }
+            },
+            /* SDK配置 */
+            "sdkConfigs" : {
+                "oauth" : {
+                    "weixin" : {
+                        "appid" : "wx09ed3facc95abf94",
+                        "appsecret" : "",
+                        "UniversalLinks" : "https://mp.lailab.cn/uni-universallinks/__UNI__C046081/"
+                    }
+                },
+                "maps" : {},
+                "ad" : {
+                    "hw" : {}
+                }
+            },
+            "icons" : {
+                "android" : {
+                    "hdpi" : "static/icons/logos/72x72.png",
+                    "xhdpi" : "static/icons/logos/96x96.png",
+                    "xxhdpi" : "static/icons/logos/144x144.png",
+                    "xxxhdpi" : "static/icons/logos/192x192.png"
+                },
+                "ios" : {
+                    "appstore" : "static/icons/logos/1024x1024.png",
+                    "ipad" : {
+                        "app" : "static/icons/logos/76x76.png",
+                        "app@2x" : "static/icons/logos/152x152.png",
+                        "notification" : "static/icons/logos/20x20.png",
+                        "notification@2x" : "static/icons/logos/40x40.png",
+                        "proapp@2x" : "static/icons/logos/167x167.png",
+                        "settings" : "static/icons/logos/29x29.png",
+                        "settings@2x" : "static/icons/logos/58x58.png",
+                        "spotlight" : "static/icons/logos/40x40.png",
+                        "spotlight@2x" : "static/icons/logos/80x80.png"
+                    },
+                    "iphone" : {
+                        "app@2x" : "static/icons/logos/120x120.png",
+                        "app@3x" : "static/icons/logos/180x180.png",
+                        "notification@2x" : "static/icons/logos/40x40.png",
+                        "notification@3x" : "static/icons/logos/60x60.png",
+                        "settings@2x" : "static/icons/logos/58x58.png",
+                        "settings@3x" : "static/icons/logos/87x87.png",
+                        "spotlight@2x" : "static/icons/logos/80x80.png",
+                        "spotlight@3x" : "static/icons/logos/120x120.png"
+                    }
+                }
+            }
+        }
+    },
+    /* 快应用特有相关 */
+    "quickapp" : {},
+    /* 小程序特有相关 */
+    "mp-weixin" : {
+        "appid" : "wx09ed3facc95abf94",
+        "setting" : {
+            "urlCheck" : false,
+            "minified" : true
+        },
+        "usingComponents" : true
+    },
+    "mp-alipay" : {
+        "usingComponents" : true
+    },
+    "mp-baidu" : {
+        "usingComponents" : true
+    },
+    "mp-toutiao" : {
+        "usingComponents" : true
+    },
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "vueVersion" : "3",
+    "_spaceID" : "2eebff55-6264-4fb1-91bf-56146519ad87"
+}

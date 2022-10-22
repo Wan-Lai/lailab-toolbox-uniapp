@@ -1,0 +1,75 @@
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+  font-family: "iconfont"; /* Project id 3683562 */
+  src: url('//at.alicdn.com/t/c/font_3683562_hhqgn724iob.woff2?t=1665041844705') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3683562_hhqgn724iob.woff?t=1665041844705') format('woff'),
+       url('//at.alicdn.com/t/c/font_3683562_hhqgn724iob.ttf?t=1665041844705') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 26px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-arrow-right:before {
+  content: "\e617";
+}
+
+.icon-a-Arrow-Right2:before {
+  content: "\e602";
+}
+
+.icon-home:before {
+  content: "\e600";
+}
+
+.icon-home2:before {
+  content: "\e601";
+}
+
+.icon-my:before {
+  content: "\e78b";
+}
+
+.icon-myfill:before {
+  content: "\e78c";
+}
+
+.icon-fenlei-xuanzhong:before {
+  content: "\e638";
+}
+
+.icon-circle:before {
+  content: "\e606";
+}
+
+.icon-moon:before {
+  content: "\eb68";
+}
+
+.icon-music-albums:before {
+  content: "\e627";
+}
+
+.icon-love-line:before {
+  content: "\e637";
+}
+
+.icon-music-rf:before {
+  content: "\e63f";
+}
+
+.icon-pause-f:before {
+  content: "\e659";
+}
+
+.icon-arrow-down-filling:before {
+  content: "\e688";
+}
+
+.icon-play:before {
+  content: "\e680";
+}

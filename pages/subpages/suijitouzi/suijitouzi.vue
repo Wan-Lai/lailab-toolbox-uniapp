@@ -19,12 +19,12 @@
 		</view>
 		<picker class="picker" @change="countChange" :value="index" :range="array">
 			<view class="picker-text">
-				当前选择：{{array[index]}} v
+				当前选择：{{array[index]}}
 			</view>
 		</picker>
 
 		<button class="btn-start" @tap="start()">{{sum}}</button>
-
+		<ad class="sjtz-ad" adpid="1211145435"></ad>
 	</view>
 </template>
 
@@ -169,5 +169,9 @@
 		background-color: rgba(38, 38, 38, .5);
 		background-size: 60% 60%;
 		z-index: 10;
+	}
+	
+	.sjtz-ad {
+		margin: 20px;
 	}
 </style>

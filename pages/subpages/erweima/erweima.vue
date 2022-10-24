@@ -11,6 +11,7 @@
 </template>
 
 <script>
+	const app = getApp();
 	export default {
 		data() {
 			return {
@@ -23,6 +24,12 @@
 				let value = e.detail.value;
 				this.url = "https://www.lailab.cn/miniprogram/tools/qrcode.php?text=" + value;
 			},
+		},
+		onShareAppMessage() {
+			return {
+				title: "二维码生成",
+				imageUrl: app.globalData.website + '/image/swiper/image_swiper_erweima.jpg'
+			};
 		}
 	}
 </script>

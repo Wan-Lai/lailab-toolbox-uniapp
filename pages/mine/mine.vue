@@ -238,6 +238,13 @@
 						3.实现部分登录逻辑<br /><br />
 					<b>v2.1 2022-10-22</b><br />
 						1.添加自动登录逻辑<br />
+					<b>v2.1 2022-10-22</b><br />
+						1.添加自动登录逻辑<br />
+						2.各个界面微调美化<br />
+					<b>v2.2 2022-10-23</b><br />
+						1.添加抽奖助手界面<br />
+					<b>v2.2.1 2022-10-24</b><br />
+						1.完善抽奖助手子页面<br />
 				`;
 				uni.navigateTo({
 					url: `/pages/utils/showText/showText?nodes=${log}`
@@ -269,6 +276,12 @@
 				this.userInfo = app.globalData.userInfo;
 			}
 		},
+		onShareAppMessage() {
+			return {
+				title: 'LaiLab工具箱',
+				path: 'pages/mine/mine'
+			}
+		}
 
 	}
 </script>

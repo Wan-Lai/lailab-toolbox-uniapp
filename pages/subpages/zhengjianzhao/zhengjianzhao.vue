@@ -117,6 +117,12 @@
 				e.preventDefault();
 			}
 		},
+		onShareAppMessage() {
+			return {
+				title: '证件照助手',
+				imageUrl: app.globalData.website + '/image/swiper/image_swiper_zhengjianzhao.jpg'
+			}
+		}
 	}
 </script>
 

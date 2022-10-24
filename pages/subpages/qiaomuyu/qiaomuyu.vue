@@ -13,6 +13,7 @@
 </template>
 
 <script>
+	const app = getApp();
 	export default {
 		data() {
 			return {
@@ -74,6 +75,12 @@
 			})
 			this.animation = animation
 			this.animationData = animation.export()
+		},
+		onShareAppMessage() {
+			return {
+				title: '敲木鱼',
+				imageUrl: app.globalData.website + '/image/swiper/image_swiper_qiaomuyu.jpg'
+			};
 		}
 	}
 </script>

@@ -29,6 +29,7 @@
 </template>
 
 <script>
+	const app = getApp();
 	export default {
 		data() {
 			return {
@@ -93,6 +94,12 @@
 				this.index = num;
 				this.count = ++num;
 			},
+		},
+		onShareAppMessage() {
+			return {
+				title: '随机骰子',
+				imageUrl: app.globalData.website + '/image/swiper/image_swiper_suijitouzi.jpg'
+			}
 		}
 	}
 </script>

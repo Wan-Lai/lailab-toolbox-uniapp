@@ -66,6 +66,12 @@
 					}
 				});
 			},
+		},
+		onShareAppMessage() {
+			return {
+				title: '摩斯电码',
+				imageUrl: app.globalData.website + '/image/swiper/image_swiper_mosidianma.jpg'
+			};
 		}
 	}
 </script>

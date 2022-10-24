@@ -136,6 +136,12 @@
 		},
 		onUnload() {
 			this.audioPause();
+		},
+		onShareAppMessage() {
+			return {
+				title: '八音盒',
+				imageUrl: this.picUrl
+			};
 		}
 	}
 </script>

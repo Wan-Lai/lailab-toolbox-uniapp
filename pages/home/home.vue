@@ -179,6 +179,12 @@
 						break;
 				}
 			}
+		},
+		onShareAppMessage() {
+			return {
+				title: 'LaiLab工具箱',
+				path: 'pages/home/home'
+			}
 		}
 	}
 </script>

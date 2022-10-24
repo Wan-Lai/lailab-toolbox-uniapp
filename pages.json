@@ -82,17 +82,22 @@
 				"navigationBarBackgroundColor": "#f6f7f9"
 			}
 
+		}, {
+			"path": "pages/subpages/choujiangzhushou/choujiangzhushou",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/subpages/choujiangzhushou/jiaruchoujiang",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/subpages/choujiangzhushou/choujiangzhushou",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "LaiLab工具箱",

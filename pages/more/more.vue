@@ -4,8 +4,8 @@
 			<view class="classify-cards" v-for="(items,index) in tools" :key="index">
 				<text class="classify-name" style="margin: 10px auto;">{{items.name}}</text>
 				<view>
-					<tcard class="tool-card" v-for="(item,index1) in items.cards" :key="index1" :title="item.title" :detail="item.detail"
-						:color="item.color" :icon="item.icon" :url="item.url">
+					<tcard class="tool-card" v-for="(item,index1) in items.cards" :key="index1" :title="item.title"
+						:detail="item.detail" :color="item.color" :icon="item.icon" :url="item.url">
 					</tcard>
 				</view>
 			</view>
@@ -37,6 +37,12 @@
 					},
 				});
 			},
+		},
+		onShareAppMessage() {
+			return {
+				title: 'LaiLab工具箱',
+				path: 'pages/more/more'
+			}
 		}
 	}
 </script>
@@ -83,7 +89,7 @@
 	.tool-card:nth-child(2n-1) {
 		margin-right: 5%;
 	}
-	
+
 	.tool-card:last-child {
 		margin-bottom: 0;
 	}

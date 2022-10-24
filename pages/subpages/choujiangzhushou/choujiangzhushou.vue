@@ -2,8 +2,8 @@
 	<view class="container">
 		<!-- 奖品图片 -->
 		<view class="gift-show">
-			<image class="gift-img"></image>
-			<button class="btn-switch">C</button>
+			<image class="gift-img" :src="picUrl" mode="aspectFill"></image>
+			<button class="btn-switch">换</button>
 		</view>
 		<!-- 奖品名称 -->
 		<view class="item gift-name">
@@ -38,7 +38,7 @@
 			<block v-if="typeIndex==0">
 				<text class="item-tip info-tip">开奖时间</text>
 				<view class="uni-list picker-date">
-					<picker mode="dateTime" :value="date" :start="startDate" :end="endDate" @change="bindDataChange">
+					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDataChange">
 						<view class="uni-input">{{date}}</view>
 					</picker>
 				</view>
@@ -57,10 +57,18 @@
 				</view>
 			</block>
 		</view>
+		<!-- 我的抽奖 -->
+		<view class="gift-history">
+			<!-- <text class="history-tip">我的抽奖</text> -->
+			<view class="item item-history" v-for="(item,index) in giftList" :key="index">
+				<text class="item-tip">{{item.name}}</text>
+				<text class="item-tip">{{item.open?'已开奖':'待开奖'}}</text>
+			</view>
+		</view>
 		<!-- 发起抽奖 -->
 		<button class="gift-start">发起抽奖</button>
 		<!-- 分享抽奖 -->
-		<button class="gift-share" v-if="isCreate">分享抽奖</button>
+		<button class="gift-share" v-if="isCreate" open-type="share">分享抽奖</button>
 	</view>
 </template>
 
@@ -72,11 +80,38 @@
 			})
 			const currenTime = this.getTime();
 			return {
+				picUrl: 'https://www.lailab.cn/miniprogram/image/other/image_tool_bayinhe.jpg',
 				openType: ['按时间自动开奖', '按人数自动开奖', '发起者手动开奖'],
 				typeIndex: 0,
 				date: currentDate,
 				time: currenTime,
-				isCreate: true
+				isCreate: true,
+				giftList: [
+					{
+						name: '我的抽奖1',
+						open: true
+					},
+					{
+						name: '我的抽奖2',
+						open: false
+					},
+					{
+						name: '我的抽奖3',
+						open: true
+					},
+					{
+						name: '我的抽奖4',
+						open: false
+					},
+					{
+						name: '我的抽奖5',
+						open: true
+					},
+					{
+						name: '我的抽奖6',
+						open: false
+					},
+				]
 			}
 		},
 		computed: {
@@ -120,15 +155,22 @@
 				minute = minute > 9 ? minute : '0' + minute;
 				return `${hour}:${minute}`;
 			}
+		},
+		onShareAppMessage() {
+			return {
+				title: '参与抽奖',
+				path: '/pages/subpages/choujiangzhushou/jiaruchoujiang',
+				imageUrl: this.picUrl
+			}
 		}
 	}
 </script>
 
 <style>
 	.container {
-		height: 94vh;
+		height: auto;
 		width: 94vw;
-		padding: 3vh 3vw;
+		padding: 0 3vw 20px 3vw;
 	}
 
 	/* 奖品图片展示区域 */
@@ -151,12 +193,12 @@
 
 	/* 更换图片 */
 	.btn-switch {
-		background-color: pink;
 		border: 0;
 		border-radius: 20px;
 		height: 50px;
 		width: 50px;
 		background-color: pink;
+		color: white;
 		position: absolute;
 		top: 20px;
 		right: 20px;
@@ -239,10 +281,30 @@
 		border: 0;
 		border-radius: 20px;
 		font-weight: bold;
-		box-shadow: 0 0 20px orangered;
+		box-shadow: 0 0 10px orangered;
 	}
 	.gift-share {
 		background-color: dodgerblue;
-		box-shadow: 0 0 20px dodgerblue;
+		box-shadow: 0 0 10px dodgerblue;
+	}
+	/* 抽奖历史 */
+	.gift-history {
+		max-height: 150px;
+		overflow: scroll;
+		background-color: #f6f7f9;
+		border-radius: 20px;
+		/* padding: 0 10px 0 10px; */
+	}
+	.history-tip {
+		display: block;
+		width: 100%;
+		padding: 10px 0;
+		border-bottom:3px solid white ;
+	}
+	.item-history {
+		margin: 0;
+		padding: 0;
+		border-radius: 0;
+		border-bottom: 3px solid white;
 	}
 </style>

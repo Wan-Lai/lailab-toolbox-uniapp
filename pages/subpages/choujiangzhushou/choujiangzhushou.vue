@@ -3,25 +3,25 @@
 		<!-- 奖品图片 -->
 		<view class="gift-show">
 			<image class="gift-img" :src="picUrl" mode="aspectFill"></image>
-			<button class="btn-switch">换</button>
+			<button class="btn-switch" @tap="changeImage()">换</button>
 		</view>
 		<!-- 奖品名称 -->
 		<view class="item gift-name">
 			<text class="item-tip name-tip">奖品名称</text>
-			<input class="item-input name" type="text" placeholder="请输入名称" />
+			<input class="item-input name" @input="bindAwardName" type="text" placeholder="请输入名称" />
 		</view>
 		<!-- 奖品数量 -->
 		<view class="item gift-count">
 			<text class="item-tip count-tip">奖品数量</text>
 			<view class="item-input">
-				<input class=" count" type="number" maxlength="2" placeholder="数量" />
+				<input class=" count" @input="bindAwardNum" type="number" maxlength="2" placeholder="数量" />
 				<text class="item-tip count-unit">个</text>
 			</view>
 		</view>
 		<!-- 奖品说明 -->
 		<view class="item gift-info">
 			<text class="item-tip info-tip">奖品说明</text>
-			<input class="item-input" type="text" placeholder="请输入奖品说明" />
+			<input class="item-input" @input="bindAwardDetail" type="text" placeholder="请输入奖品说明" />
 		</view>
 		<!-- 开奖方式 -->
 		<view class="item open-type">
@@ -36,9 +36,9 @@
 		<!-- 开奖设置 -->
 		<view class="item open-setting" v-if="typeIndex!=2">
 			<block v-if="typeIndex==0">
-				<text class="item-tip info-tip">开奖时间</text>
+				<text class="item-etip info-tip">开奖时间</text>
 				<view class="uni-list picker-date">
-					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDataChange">
+					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
 						<view class="uni-input">{{date}}</view>
 					</picker>
 				</view>
@@ -52,7 +52,7 @@
 				<!-- 通过人数开奖 -->
 				<text class="item-tip count-tip">开奖人数</text>
 				<view class="item-input">
-					<input class=" count" type="number" maxlength="2" placeholder="数量" />
+					<input class=" count" @input="bindNeedUsers" type="number" maxlength="2" placeholder="数量" />
 					<text class="item-tip count-unit">个</text>
 				</view>
 			</block>
@@ -66,52 +66,35 @@
 			</view>
 		</view>
 		<!-- 发起抽奖 -->
-		<button class="gift-start">发起抽奖</button>
+		<button class="gift-start" @tap="start()">发起抽奖</button>
 		<!-- 分享抽奖 -->
 		<button class="gift-share" v-if="isCreate" open-type="share">分享抽奖</button>
 	</view>
 </template>
 
 <script>
+	const app = getApp();
+
 	export default {
 		data() {
 			const currentDate = this.getDate({
 				format: true
-			})
+			});
 			const currenTime = this.getTime();
 			return {
-				picUrl: 'https://www.lailab.cn/miniprogram/image/other/image_tool_bayinhe.jpg',
+				picUrl: app.globalData.website + '/image/other/image_tool_choujiangzhushou.jpg',
+				sharePicUrl: app.globalData.website + '/image/share/image_tool_choujiangzhushou.jpg',
+				awardName: '',
+				awardNum: 1,
+				awardDetail: '',
 				openType: ['按时间自动开奖', '按人数自动开奖', '发起者手动开奖'],
 				typeIndex: 0,
 				date: currentDate,
 				time: currenTime,
-				isCreate: true,
-				giftList: [
-					{
-						name: '我的抽奖1',
-						open: true
-					},
-					{
-						name: '我的抽奖2',
-						open: false
-					},
-					{
-						name: '我的抽奖3',
-						open: true
-					},
-					{
-						name: '我的抽奖4',
-						open: false
-					},
-					{
-						name: '我的抽奖5',
-						open: true
-					},
-					{
-						name: '我的抽奖6',
-						open: false
-					},
-				]
+				openNeedUsers: 1,
+				awardId: '',
+				isCreate: false,
+				giftList: []
 			}
 		},
 		computed: {
@@ -123,14 +106,95 @@
 			}
 		},
 		methods: {
-			bindOpentypeChange: function(e) {
-				this.typeIndex = e.detail.value;
+			changeImage() {
+				const that = this;
+				wx.chooseImage({
+					count: 1, //默认9
+					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+					sourceType: ['album'], //从相册选择
+					success(res) {
+						that.picUrl = res.tempFilePaths[0];
+					}
+				})
 			},
-			bindDataChange: function(e) {
+			// 获取奖品名称
+			bindAwardName: function(e) {
+				this.awardName = e.detail.value;
+			},
+			// 获取奖品数量
+			bindAwardNum: function(e) {
+				this.awardNum = e.detail.value;
+			},
+			// 获取奖品详情
+			bindAwardDetail: function(e) {
+				this.awardDetail = e.detail.value;
+			},
+			// 绑定抽奖方式
+			bindOpentypeChange: function(e) {
+				this.typeIndex = Number(e.detail.value);
+			},
+			// 绑定日期选择
+			bindDateChange: function(e) {
 				this.date = e.detail.value;
 			},
+			// 绑定时间选择
 			bindTimeChange: function(e) {
 				this.time = e.detail.value;
+			},
+			// 绑定所需用户数量
+			bindNeedUsers: function(e) {
+				this.openNeedUsers = Number(e.detail.value);
+			},
+			// 发起抽奖
+			start() {
+				const that = this;
+				const openDateTime = this.date + ' ' + this.time;
+				const startDateTime = this.getDate() + ' ' + this.getTime();
+				let rst = {
+					openId: app.globalData.openId,
+					awardImage: this.picUrl,
+					awardName: this.awardName,
+					awardNum: this.awardNum,
+					awardDetail: this.awardDetail,
+					openType: this.typeIndex,
+					startDateTime: startDateTime,
+					openDateTime: openDateTime,
+					openNeedUsers: this.openNeedUsers,
+				};
+				uni.showLoading({
+					title: '抽奖创建中...',
+					icon: 'loading'
+				})
+				uni.request({
+					url: app.globalData.website + '/tools/choujiangzhushou/addAwardInfo.php',
+					method: 'POST',
+					data: rst,
+					success(res) {
+						if (res.data.err == 1) {
+							uni.hideLoading();
+							uni.showToast({
+								title: '抽奖创建成功',
+								icon: 'success'
+							})
+							that.awardId = res.data.result[0].id;
+							if (that.awardId != '') {
+								that.isCreate = true;
+							}
+						} else if (res.data.err == 0) {
+							uni.hideLoading();
+							uni.showToast({
+								title: '抽奖创建失败',
+								icon: 'error'
+							})
+						}
+					},
+					fail(res) {
+						uni.showModal({
+							title: '错误',
+							content: res.errMsg
+						})
+					}
+				})
 			},
 			getDate(type) {
 				const date = new Date();
@@ -157,10 +221,18 @@
 			}
 		},
 		onShareAppMessage() {
-			return {
-				title: '参与抽奖',
-				path: '/pages/subpages/choujiangzhushou/jiaruchoujiang',
-				imageUrl: this.picUrl
+			if (this.isCreate) {
+				return {
+					title: '参与 ' + this.awardName + 'x' + this.awardNum + ' 抽奖',
+					path: `/pages/subpages/choujiangzhushou/jiaruchoujiang?awardId=${this.awardId}`,
+					imageUrl: (this.picUrl == (app.globalData.website + '/image/other/image_tool_choujiangzhushou.jpg') ?
+						this.sharePicUrl : this.picUrl)
+				}
+			} else {
+				uni.showToast({
+					title: '创建失败',
+					icon: 'error'
+				})
 			}
 		}
 	}
@@ -193,12 +265,14 @@
 
 	/* 更换图片 */
 	.btn-switch {
+		height: 40px;
+		width: 40px;
 		border: 0;
-		border-radius: 20px;
-		height: 50px;
-		width: 50px;
-		background-color: pink;
-		color: white;
+		border-radius: 10px;
+		line-height: 40px;
+		text-align: center;
+		background-color: #f6f7f9;
+		color: black;
 		position: absolute;
 		top: 20px;
 		right: 20px;
@@ -269,7 +343,7 @@
 	.picker-time {
 		margin-right: 10px;
 	}
-	
+
 	/* 发起抽奖 */
 	/* 分享抽奖 */
 	.gift-start,
@@ -283,10 +357,12 @@
 		font-weight: bold;
 		box-shadow: 0 0 10px orangered;
 	}
+
 	.gift-share {
 		background-color: dodgerblue;
 		box-shadow: 0 0 10px dodgerblue;
 	}
+
 	/* 抽奖历史 */
 	.gift-history {
 		max-height: 150px;
@@ -295,12 +371,14 @@
 		border-radius: 20px;
 		/* padding: 0 10px 0 10px; */
 	}
+
 	.history-tip {
 		display: block;
 		width: 100%;
 		padding: 10px 0;
-		border-bottom:3px solid white ;
+		border-bottom: 3px solid white;
 	}
+
 	.item-history {
 		margin: 0;
 		padding: 0;

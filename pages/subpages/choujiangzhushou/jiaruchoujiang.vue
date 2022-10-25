@@ -2,9 +2,9 @@
 	<view class="container">
 		<!-- 奖品展示 -->
 		<view class="gift-show">
-			<image class="gift-img" :src="picUrl"></image>
-			<text class="gift-name">奖品:精美老八x8</text>
-			<text class="gift-open">10月23日 11:00 自动开奖</text>
+			<image class="gift-img" :src="picUrl" mode="aspectFill"></image>
+			<text class="gift-name">奖品:{{awardName}}x{{awardNum}}</text>
+			<text class="gift-open">{{openType==0?openDateTime + ' ':(openType==1?'满' + openNeedUsers + '人':'')}}自动开奖</text>
 		</view>
 		<!-- 操作视图 -->
 		<view class="action-view">
@@ -26,11 +26,47 @@
 </template>
 
 <script>
+	const app = getApp();
 	export default {
 		data() {
 			return {
-				picUrl: 'https://www.lailab.cn/miniprogram/image/other/image_tool_bayinhe.jpg'
+				picUrl: 'https://www.lailab.cn/miniprogram/image/other/image_tool_bayinhe.jpg',
+				awardName: 'test',
+				awardNum: 100,
+				openType: 0,
+				openDateTime: '2000-01-01 00:00',
 			}
+		},
+		onLoad(option) {
+			// console.log(option);
+			// uni.showModal({
+			// 	title: "欢迎加入",
+			// 	content: "id为"+option.awardId,
+			// })
+			const that = this;
+			uni.request({
+				url: app.globalData.website + '/tools/choujiangzhushou/getAwardInfo.php',
+				method: 'POST',
+				data: {
+					awardId: option.awardId
+				},
+				success(res) {
+					if(res.data.result.length > 0){
+						const rst = res.data.result[0];
+						that.picUrl = rst.awardImage;
+						that.awardName = rst.awardName;
+						that.awardNum = rst.awardNum;
+						that.openDateTime = rst.openDateTime;
+						that.openType = rst.openType;
+						that.openNeedUsers = rst.openNeedUsers;
+					}else {
+						uni.showToast({
+							title:'加入失败',
+							icon: 'error'
+						})
+					}
+				}
+			})
 		},
 		methods: {
 
@@ -60,7 +96,7 @@
 	/* 奖品图片展示 */
 	.gift-img {
 		width: 100%;
-		height: 400px;
+		height: 350px;
 	}
 
 	/* 奖品名称 */

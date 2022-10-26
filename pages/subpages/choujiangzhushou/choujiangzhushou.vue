@@ -85,13 +85,13 @@
 				picUrl: app.globalData.website + '/image/other/image_tool_choujiangzhushou.jpg',
 				sharePicUrl: app.globalData.website + '/image/share/image_tool_choujiangzhushou.jpg',
 				awardName: '',
-				awardNum: 1,
+				awardNum: 0,
 				awardDetail: '',
 				openType: ['按时间自动开奖', '按人数自动开奖', '发起者手动开奖'],
 				typeIndex: 0,
 				date: currentDate,
 				time: currenTime,
-				openNeedUsers: 1,
+				openNeedUsers: 0,
 				awardId: '',
 				isCreate: false,
 				giftList: []
@@ -148,10 +148,32 @@
 			// 发起抽奖
 			start() {
 				const that = this;
+				if(that.awardName=='') {
+					that.toast('奖品名称','error');
+					return;
+				}
+				if(that.awardNum == 0) {
+					that.toast('奖品数量','error');
+					return;
+				}
+				if(that.awardDetail == '') {
+					that.toast('奖品说明','error');
+					return;
+				}
+				if((that.typeIndex == 1)&&(that.openNeedUsers == 0)) {
+					that.toast('抽奖人数','error');
+					return;
+				}
+				if((that.typeIndex == 1)&&(that.awardNum >= that.openNeedUsers)) {
+					that.toast('奖品太多','error');
+					return; 
+				}
 				const openDateTime = this.date + ' ' + this.time;
 				const startDateTime = this.getDate() + ' ' + this.getTime();
 				let rst = {
-					openId: app.globalData.openId,
+					ownerId: app.globalData.openId,
+					ownerImage: app.globalData.userInfo.avatarUrl,
+					ownerNickName: app.globalData.userInfo.nickName,
 					awardImage: this.picUrl,
 					awardName: this.awardName,
 					awardNum: this.awardNum,
@@ -170,6 +192,7 @@
 					method: 'POST',
 					data: rst,
 					success(res) {
+							console.log(res);
 						if (res.data.err == 1) {
 							uni.hideLoading();
 							uni.showToast({
@@ -218,6 +241,12 @@
 				hour = hour > 9 ? hour : '0' + hour;
 				minute = minute > 9 ? minute : '0' + minute;
 				return `${hour}:${minute}`;
+			},
+			toast(title, icon) {
+				uni.showToast({
+					title: title,
+					icon: icon
+				})
 			}
 		},
 		onShareAppMessage() {
@@ -310,7 +339,7 @@
 	.count {
 		width: 68%;
 		text-align: right;
-		padding-right: 0;
+		padding-right: 10px;
 		flex: 10;
 		float: inline-start;
 	}
@@ -329,6 +358,7 @@
 	/* 开奖方式选择器 */
 	.type-picker {
 		flex: 3;
+		/* background-color: red; */
 	}
 
 	/* 显示开奖方式 */
@@ -341,7 +371,26 @@
 	/* 时间选择器 */
 	.picker-date,
 	.picker-time {
+		display: block;
+		width: auto;
+		justify-content: space-between;
+		float:right;
+		/* background-color: red; */
 		margin-right: 10px;
+	}
+	
+	.picker-date {
+		flex: 7;
+		text-align: right;
+	}
+	.picker-time {
+		flex: 1;
+	}
+	
+	/* 开奖时间 */
+	.item-etip {
+		padding: 10px;
+		flex: 3;
 	}
 
 	/* 发起抽奖 */

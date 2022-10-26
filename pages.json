@@ -92,8 +92,8 @@
 		}, {
 			"path": "pages/subpages/choujiangzhushou/jiaruchoujiang",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationBarTitleText": "参与抽奖",
+				"enablePullDownRefresh": true
 			}
 
 		}

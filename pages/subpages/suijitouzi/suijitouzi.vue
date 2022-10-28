@@ -24,7 +24,7 @@
 		</picker>
 
 		<button class="btn-start" @tap="start()">{{sum}}</button>
-		<ad class="sjtz-ad" adpid="1211145435"></ad>
+		<!-- <ad class="sjtz-ad" adpid="1211145435"></ad> -->
 	</view>
 </template>
 
@@ -161,7 +161,7 @@
 		background-color: #262626;
 		color: white;
 	}
-	
+
 	.sjtz-share {
 		position: absolute;
 		top: 20px;
@@ -177,7 +177,7 @@
 		background-size: 60% 60%;
 		z-index: 10;
 	}
-	
+
 	.sjtz-ad {
 		margin: 20px;
 	}

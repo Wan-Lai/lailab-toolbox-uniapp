@@ -30,11 +30,11 @@
 				<text class="i-name">开发日志</text>
 				<text class="i-more iconfont icon-arrow-right"></text>
 			</button>
-			<button class="item love" @tap="admire()">
+			<!-- <button class="item love" @tap="admire()">
 				<image class="i-icon" src="/static/icons/icon_love.png" mode="widthFix"></image>
 				<text class="i-name">捐赠作者</text>
 				<text class="i-more iconfont icon-arrow-right"></text>
-			</button>
+			</button> -->
 			<button class="item share" open-type="share">
 				<image class="i-icon" src="/static/icons/icon_share.png" mode="widthFix"></image>
 				<text class="i-name">分享好友</text>

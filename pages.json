@@ -1,4 +1,5 @@
 {
+
 	"pages": [{
 			"path": "pages/home/home",
 			"style": {
@@ -81,7 +82,6 @@
 				"navigationBarTitleText": "随机骰子",
 				"navigationBarBackgroundColor": "#f6f7f9"
 			}
-
 		}, {
 			"path": "pages/subpages/choujiangzhushou/choujiangzhushou",
 			"style": {

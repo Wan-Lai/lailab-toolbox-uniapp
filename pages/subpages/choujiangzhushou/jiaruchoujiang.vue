@@ -36,6 +36,7 @@
 				userId: 0,
 				joinList: [],
 				joinCount: 0,
+				requestStatus: false,
 				isOpened: false,
 				isJoin: false,
 				isClick: false,
@@ -45,61 +46,39 @@
 		onLoad(option) {
 			const that = this;
 			that.awardId = option.awardId;
+			uni.showLoading({
+				title: '正在加载...',
+				icon: 'loading'
+			})
 			that.refresh();
 		},
 		methods: {
-			join() {
+			async join() {
 				const that = this;
-				uni.showLoading({
-					title: '正在加入',
-					icon: 'loading'
-				});
-				uni.request({
-					url: app.globalData
-						.website +
-						"/tools/choujiangzhushou/userJoin.php",
-					method: 'POST',
-					data: {
-						awardId: that.awardId,
-						userId: that.userId
-					},
-					success(res1) {
-						console.log('5.用户加入', res1);
-						uni.hideLoading();
-						if (res1.data.err == 0) {
-							uni.showToast({
-								title: '加入失败',
-								icon: 'error',
-							});
-						} else if (res1.data.err == 1) {
-							uni.showToast({
-								title: '加入成功',
-								icon: 'success'
-							})
-							that.isJoin = true;
-						} else if (res1.data.err == 2) {
-							that.isClick = false;
-							uni.showLoading({
-								title: '正在开奖中',
-								icon: 'loading'
-							});
-							// 是否中奖
-							that.checkLuckyClover();
-						} else if (res1.data.err == 3) {
-							that.isClick = false;
-							uni.showToast({
-								title: "开奖失败",
-								icon: 'error'
-							})
-						} else {
-							uni.showModal({
-								title: '提示',
-								content: res1.data.msg
-							})
-						}
-						that.refresh();
-					}
-				});
+				if(that.requestStatus) {
+					uni.showToast({
+						title: '点的太快了',
+						icon: 'error',
+					});
+					return false;
+				}
+				if((!that.userId)||(that.userId == 0)||(that.userId == '')){
+					uni.showToast({
+						title: '加入失败',
+						icon: 'loading'
+					});
+					return false;
+				}else {
+					uni.showLoading({
+						title: '正在加入',
+						icon: 'loading'
+					});
+					await that.joinAward();
+				}
+				that.requestStatus = true;
+				setTimeout(()=>{
+					that.requestStatus = false;
+				}, 2000);
 			},
 			load() {
 				var msg = '条件';
@@ -114,11 +93,99 @@
 					content: msg,
 				})
 			},
-			refresh() {
+			async refresh() {
 				const that = this;
 				that.joinList = [];
 				that.isJoin = false;
 				that.isClick = false;
+				// 1.通过奖品号获取奖品信息
+				await that.getAwardInfo();
+				// 2.通过openId获取用户Id
+				await that.getUserId();
+				// 3.通过奖品Id获取参与用户ID
+				await that.showUsers();
+				// 若开奖停用按钮
+				if (that.isLockyClover) {
+					that.isClick = false;
+					uni.hideLoading();
+				}
+				if (that.isOpened) {
+					that.isClick = false;
+				}
+			},
+			checkLuckyClover() {
+				const that = this;
+				uni.request({
+					url: app.globalData.website + '/tools/choujiangzhushou/checkLuckyClover.php',
+					method: 'POST',
+					data: {
+						awardId: that.awardId,
+						userId: that.userId
+					},
+					success(res) {
+						console.log('6.查看是否中奖', res);
+						uni.hideLoading();
+						if (res.data.result.length > 0) {
+							that.isLockyClover = (res.data.result[0].luckyClover == 1);
+						}
+					}
+				})
+			},
+			showUsers() {
+				const that = this;
+				// 通过奖品ID查询各种信息
+				uni.request({
+					url: app.globalData.website + '/tools/choujiangzhushou/joinUserInfo.php',
+					method: 'POST',
+					data: {
+						awardId: that.awardId
+					},
+					success(res) {
+						console.log('3.通过奖品Id获取参与用户ID', res);
+						const users = res.data.result;
+						that.joinUserID = users;
+						that.joinCount = Number(users.length);
+						for (var i = 0; i < users.length; i++) {
+							const user = users[i];
+							uni.request({
+								url: app.globalData.website + '/api/getUserInfoById.php',
+								method: 'POST',
+								data: {
+									id: user.userId
+								},
+								success(res1) {
+									console.log('4.通过userId获取用户信息(图像)', res1);
+									for (var i = 0; i < res1.data.result.length; i++) {
+										that.joinList.push({
+											userImg: res1.data.result[0].avatarUrl
+										});
+									}
+								}
+							});
+							if (user.userId == that.userId) {
+								that.isJoin = true;
+								console.log("用户已参与抽奖");
+							}
+						}
+						setTimeout(function() {
+							uni.hideLoading();
+							if(!that.isOpened){
+								that.isClick = true;
+							}
+						}, 1000);
+						// 若开奖,查看是否中奖品，放这里因为这里产生userId
+						if(that.isOpened) {
+							// 检测是否中奖
+							that.checkLuckyClover();
+						}
+					},
+					fail(res) {
+						console.log('访问失败', res);
+					}
+				});
+			},
+			getAwardInfo() {
+				const that = this;
 				// 请求奖品信息
 				uni.request({
 					url: app.globalData.website + '/tools/choujiangzhushou/getAwardInfo.php',
@@ -144,11 +211,11 @@
 								icon: 'error'
 							})
 						}
-						if (that.isOpened) {
-							that.isClick = false;
-						}
 					}
 				});
+			},
+			getUserId() {
+				const that = this;
 				uni.request({
 					url: app.globalData.website + "/api/getUserInfo.php",
 					method: 'POST',
@@ -159,85 +226,76 @@
 						console.log('2.通过openId获取用户Id', res);
 						if (res.data.result) {
 							that.userId = res.data.result[0].id;
+							if(that.userId == 0){
+								uni.hideLoading();
+								uni.showToast({
+									title: '加载失败',
+									icon: 'error'
+								});
+								that.isClick = false;
+								return false;
+							}
 						} else {
 							uni.hideLoading();
-							console.log(res);
+							console.log('通过OpenId获取userId失败',res);
 							uni.showToast({
-								title: '加载成功',
+								title: '加载失败',
 								icon: 'success'
 							})
 						}
-						// 若开奖,查看是否中奖品，放这里因为这里产生userId
-						if(that.isOpened) {
-							// 检测是否中奖
-							that.checkLuckyClover();
-						}
 					}
 				});
-				// 通过奖品ID查询各种信息
-				uni.request({
-					url: app.globalData.website + '/tools/choujiangzhushou/userJoinInfo.php',
-					method: 'POST',
-					data: {
-						awardId: that.awardId
-					},
-					success(res) {
-						console.log('3.通过奖品Id获取参与用户ID', res);
-						const users = res.data.result;
-						that.joinCount = Number(users.length);
-						for (var i = 0; i < users.length; i++) {
-							const user = users[i];
-							uni.request({
-								url: app.globalData.website + '/api/getUserInfoById.php',
-								method: 'POST',
-								data: {
-									id: user.userId
-								},
-								success(res1) {
-									console.log('4.通过userId获取用户信息(图像)', res1);
-									for (var i = 0; i < res1.data.result.length; i++) {
-										that.joinList.push({
-											userImg: res1.data.result[0].avatarUrl
-										});
-									}
-								}
-							});
-							if (user.userId == that.userId) {
-								that.isJoin = true;
-							}
-						}
-						setTimeout(function() {
-							if(!that.isOpened){
-								that.isClick = true;
-							}
-						}, 1000);
-					},
-					fail(res) {
-						console.log('访问失败', res);
-					}
-				});
-				// 若开奖停用按钮
-				if (that.isLockyClover) {
-					that.isClick = false;
-				}
 			},
-			checkLuckyClover() {
+			joinAward() {
 				const that = this;
 				uni.request({
-					url: app.globalData.website + '/tools/choujiangzhushou/isluckyClover.php',
+					url: app.globalData
+						.website +
+						"/tools/choujiangzhushou/joinUser.php",
 					method: 'POST',
 					data: {
 						awardId: that.awardId,
 						userId: that.userId
 					},
-					success(res) {
-						console.log('6.查看是否中奖', res);
+					success(res1) {
+						console.log('5.用户加入', res1);
 						uni.hideLoading();
-						if (res.data.result) {
-							that.isLockyClover = res.data.result[0].luckyClover == 1;
+						if (res1.data.err == 0) {
+							uni.showToast({
+								title: '加入失败',
+								icon: 'error',
+							});
+						} else if (res1.data.err == 1) {
+							uni.showToast({
+								title: '加入成功',
+								icon: 'success'
+							})
+							that.isJoin = true;
+						} else if (res1.data.err == 2) {
+							that.isClick = false;
+							uni.showLoading({
+								title: '正在开奖中',
+								icon: 'loading'
+							});
+							setTimeout(function(){
+								// 是否中奖
+								that.checkLuckyClover();
+							},2000);
+						} else if (res1.data.err == 3) {
+							that.isClick = false;
+							uni.showToast({
+								title: "开奖失败",
+								icon: 'error'
+							})
+						} else {
+							uni.showModal({
+								title: '提示',
+								content: res1.data.msg
+							})
 						}
+						that.refresh();
 					}
-				})
+				});
 			}
 		},
 		onPullDownRefresh() {
@@ -250,9 +308,11 @@
 		},
 		onShareAppMessage() {
 			return {
-				title: '参与抽奖'
+				title: '参与 ' + this.awardName + 'x' + this.awardNum + ' 抽奖',
+				path: `/pages/subpages/choujiangzhushou/jiaruchoujiang?awardId=${this.awardId}`,
+				imageUrl: this.picUrl
 			}
-		}
+		},
 	}
 </script>
 

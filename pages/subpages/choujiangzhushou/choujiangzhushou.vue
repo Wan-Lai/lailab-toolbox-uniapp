@@ -60,9 +60,11 @@
 		<!-- 我的抽奖 -->
 		<view class="gift-history">
 			<!-- <text class="history-tip">我的抽奖</text> -->
-			<view class="item item-history" v-for="(item,index) in giftList" :key="index">
-				<text class="item-tip">{{item.name}}</text>
-				<text class="item-tip">{{item.open?'已开奖':'待开奖'}}</text>
+			<view class="item item-history" v-for="(item,index) in awardList" :key="index" @tap="turnTo(item.id)"  @longtap="del(item.id)" :hidden="item.isDelete==1">
+				<text class="item-tip">{{item.awardName}}</text>
+				<text class="item-tip award-detail">{{item.awardDetail}}</text>
+				<text class="item-tip"
+					:class="item.isOpened == 1?'award-opened':'award-unopened'">{{item.isOpened==1?'已开奖':'待开奖'}}</text>
 			</view>
 		</view>
 		<!-- 发起抽奖 -->
@@ -94,7 +96,7 @@
 				openNeedUsers: 0,
 				awardId: '',
 				isCreate: false,
-				giftList: []
+				awardList: []
 			}
 		},
 		computed: {
@@ -104,6 +106,9 @@
 			endDate() {
 				return this.getDate('end');
 			}
+		},
+		onLoad() {
+			this.init();
 		},
 		methods: {
 			changeImage() {
@@ -148,28 +153,38 @@
 			// 发起抽奖
 			start() {
 				const that = this;
-				if(that.awardName=='') {
-					that.toast('奖品名称','error');
-					return;
+				if (that.awardName == '') {
+					that.toast('奖品名称', 'error');
+					return false;
 				}
-				if(that.awardNum == 0) {
-					that.toast('奖品数量','error');
-					return;
+				if (that.awardNum == 0) {
+					that.toast('奖品数量', 'error');
+					return false;
 				}
-				if(that.awardDetail == '') {
-					that.toast('奖品说明','error');
-					return;
+				if (that.awardDetail == '') {
+					that.toast('奖品说明', 'error');
+					return false;
 				}
-				if((that.typeIndex == 1)&&(that.openNeedUsers == 0)) {
-					that.toast('抽奖人数','error');
-					return;
+				if ((that.typeIndex == 1) && (that.openNeedUsers == 0)) {
+					that.toast('抽奖人数', 'error');
+					return false;
 				}
-				if((that.typeIndex == 1)&&(that.awardNum >= that.openNeedUsers)) {
-					that.toast('奖品太多','error');
-					return; 
+				if ((that.typeIndex == 1) && (that.awardNum >= that.openNeedUsers)) {
+					that.toast('奖品太多', 'error');
+					return false;
 				}
 				const openDateTime = this.date + ' ' + this.time;
 				const startDateTime = this.getDate() + ' ' + this.getTime();
+				const pretime = new Date(startDateTime);
+				const opentime = new Date(openDateTime);
+				if ((that.typeIndex == 0)&&(pretime >= opentime)) {
+					that.toast("时光倒流", 'error');
+					return false;
+				}
+				if ((that.typeIndex == 0)&&(opentime.getTime() - pretime.getTime() < 300000)) {
+					that.toast(((opentime.getTime() - pretime.getTime()) / 60000) + "分钟太短", 'error');
+					return false;
+				}
 				let rst = {
 					ownerId: app.globalData.openId,
 					ownerImage: app.globalData.userInfo.avatarUrl,
@@ -192,7 +207,7 @@
 					method: 'POST',
 					data: rst,
 					success(res) {
-							console.log(res);
+						console.log("1.加入抽奖",res);
 						if (res.data.err == 1) {
 							uni.hideLoading();
 							uni.showToast({
@@ -203,6 +218,7 @@
 							if (that.awardId != '') {
 								that.isCreate = true;
 							}
+							that.init();
 						} else if (res.data.err == 0) {
 							uni.hideLoading();
 							uni.showToast({
@@ -219,6 +235,35 @@
 					}
 				})
 			},
+			del(id) {
+				const that = this;
+				uni.showModal({
+					title:'提示',
+					content:'是否删除此次抽奖',
+					confirmText:'是的',
+					cancelText:'点错了',
+					success(res) {
+						if(res.confirm) {
+							uni.request({
+								url: app.globalData.website + '/tools/choujiangzhushou/delAwardInfo.php',
+								method: 'POST',
+								data: {
+									openId: app.globalData.openId,
+									awardId: id
+								},
+								success(res) {
+									if(res.data.err == 1){
+										that.init();
+									} else {
+										that.toast("删除失败", 'error');
+									}
+								}
+							});
+						}
+					}
+				})
+				
+			},
 			getDate(type) {
 				const date = new Date();
 				let year = date.getFullYear();
@@ -226,9 +271,11 @@
 				let day = date.getDate();
 
 				if (type === 'start') {
-					year = year - 60;
+					year = year;
+					month = month;
 				} else if (type === 'end') {
-					year = year + 2;
+					year = year;
+					month = month + 1;
 				}
 				month = month > 9 ? month : '0' + month;
 				day = day > 9 ? day : '0' + day;
@@ -247,6 +294,28 @@
 					title: title,
 					icon: icon
 				})
+			},
+			turnTo(id) {
+				console.log('2.抽奖跳转');
+				uni.navigateTo({
+					url: '/pages/subpages/choujiangzhushou/jiaruchoujiang?awardId=' + id,
+				})
+			},
+			init() {
+				const that = this;
+				uni.request({
+					url: app.globalData.website + '/tools/choujiangzhushou/getUserAward.php',
+					method: 'POST',
+					data: {
+						'openId': app.globalData.openId
+					},
+					success(res) {
+						console.log('1.获取用户所建抽奖', res);
+						if (res.data.result) {
+							that.awardList = res.data.result;
+						}
+					}
+				})
 			}
 		},
 		onShareAppMessage() {
@@ -263,7 +332,7 @@
 					icon: 'error'
 				})
 			}
-		}
+		},
 	}
 </script>
 
@@ -374,19 +443,20 @@
 		display: block;
 		width: auto;
 		justify-content: space-between;
-		float:right;
+		float: right;
 		/* background-color: red; */
 		margin-right: 10px;
 	}
-	
+
 	.picker-date {
 		flex: 7;
 		text-align: right;
 	}
+
 	.picker-time {
 		flex: 1;
 	}
-	
+
 	/* 开奖时间 */
 	.item-etip {
 		padding: 10px;
@@ -433,5 +503,26 @@
 		padding: 0;
 		border-radius: 0;
 		border-bottom: 3px solid white;
+	}
+
+	/* 所有开奖 */
+	/* 开奖详情 */
+	.award-detail {
+		font-size: 14px;
+		color: #888888;
+		text-align: left;
+	}
+
+	/* 开奖情况 */
+	.award-opened {
+		font-size: 12px;
+		color: #888888;
+		text-align: right;
+	}
+
+	.award-unopened {
+		font-size: 12px;
+		color: red;
+		text-align: right;
 	}
 </style>
